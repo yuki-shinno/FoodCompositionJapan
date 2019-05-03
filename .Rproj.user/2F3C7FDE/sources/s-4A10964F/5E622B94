@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1556920601161.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "5E622B94",
+    "lastKnownWriteTime" : 1556924515,
+    "last_content_update" : 1556924515213,
+    "path" : "~/R/FoodCompositionInJapan/R/food_composition.R",
+    "project_path" : "R/food_composition.R",
+    "properties" : {
+        "cursorPosition" : "26,0",
+        "scrollLine" : "4",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
