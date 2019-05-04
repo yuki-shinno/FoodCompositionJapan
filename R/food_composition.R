@@ -54,5 +54,3 @@ subsetFoodRichIn = function(nutrient_name, food_group = NULL, n = 10) {
     }
     return(head(food_composition, n))
 }
-
-getNutrientNames()
