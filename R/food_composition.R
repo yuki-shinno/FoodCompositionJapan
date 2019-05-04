@@ -1,26 +1,56 @@
-searchByVector = function(target_vector, search_string, ignore_case=T){
-  index <- grep(x=target_vector, pattern=search_string, ignore.case = ignore_case)
-  ret <- target_vector[index]
-  return(ret)
+extractValueFromVector = function(target, keyword, ignore_case = T) {
+    index <- grep(x = target, pattern = keyword, ignore.case = ignore_case)
+    result <- target[index]
+    return(result)
+}
+
+extractSubsetFromFoodGroup = function(target_food_group) {
+    subset_food_composition <- subset(x = food_composition, food_composition$food_group == target_food_group)
+    return(subset_food_composition)
+}
+
+deleteBrackets = function(target) {
+    target <- gsub(pattern = "\\(", replacement = "", x = target)
+    target <- gsub(pattern = ")", replacement = "", x = target)
+    return(target)
 }
 
 getNutrientNames = function() {
-  data("food_composition")
-  col_names <- colnames(food_composition)
-  return(searchByVector(target_vector = col_names, search_string = ")"))
+    data("food_composition")
+    col_names <- colnames(food_composition)
+    return(extractValueFromVector(target_vector = col_names, search_string = ")"))
 }
 
-getFoodGroups = function(){
-  data("food_composition")
-  return(unique(food_composition$food_group))
+getFoodGroups = function() {
+    data("food_composition")
+    return(unique(food_composition$food_group))
 }
 
-findFoodName = function(keyword, food_group=NULL){
-  data("food_composition")
-  if(is.null(food_group)){}
-  else{
-    food_composition <- subset(food_composition ,`Food Group`== food_group)
-  }
-  food_name_list <- food_composition$`Food and Description`
-  return(searchByVector(target_vector = food_name_list, search_string = keyword))
+findFood = function(keyword, food_group = NULL) {
+    data("food_composition")
+    if (is.character(food_group)) {
+        food_composition <- extractSubsetFromFoodGroup(food_group)
+    }
+    subset_food <- subset(food_composition, grepl(keyword, food_composition$food_and_description))
+    if (dim(subset_food)[1] == 0) {
+        stop("not found input keyword.")
+    }
+    return(subset_food)
+}
+
+subsetFoodRichIn = function(nutrient_name, food_group = NULL, n = 10) {
+    if (is.character(food_group)) {
+        food_composition <- extractSubsetFromFoodGroup(food_group)
+    }
+
+    index <- (grep(x = deleteBrackets(colnames(food_composition)), pattern = deleteBrackets(nutrient_name)))
+    if (length(index) > 1) {
+        stop("multiple food groups were matched. Enter unique food groups.")
+    }
+
+    food_composition <- food_composition[order(food_composition[index], decreasing = T), ]
+    if (dim(food_composition)[1] == 0) {
+        stop("not found enter food group.")
+    }
+    return(head(food_composition, n))
 }
