@@ -18,7 +18,7 @@ deleteBrackets = function(target) {
 getNutrientNames = function() {
     data("food_composition")
     col_names <- colnames(food_composition)
-    return(extractValueFromVector(target_vector = col_names, search_string = ")"))
+    return(extractValueFromVector(target = col_names, keyword = ")"))
 }
 
 getFoodGroups = function() {
@@ -54,3 +54,5 @@ subsetFoodRichIn = function(nutrient_name, food_group = NULL, n = 10) {
     }
     return(head(food_composition, n))
 }
+
+getNutrientNames()
