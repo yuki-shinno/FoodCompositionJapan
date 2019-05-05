@@ -31,7 +31,7 @@ findFood = function(keyword, food_group = NULL) {
     if (is.character(food_group)) {
         food_composition <- extractSubsetFromFoodGroup(food_group)
     }
-    subset_food <- subset(food_composition, grepl(keyword, food_composition$food_and_description))
+    subset_food <- subset(food_composition, grepl(keyword, food_composition$food_and_description,ignore.case = T))
     if (dim(subset_food)[1] == 0) {
         stop("not found input keyword.")
     }
