@@ -1,11 +1,12 @@
 Package: FoodCompositionInJapan
 Type: Package
 Title: food databese in japan
-Version: 0.0.0.9000
-Author: Yuki Shinno
+Version: 0.1.1
+Author: person("Yuki", "Shinno", email = "shinno.yuki@gmail.com", 
+  role = c("aut", "cre"))
 Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Description: This package contains a Japanese food composition table.
+  In addition, it includes functions such as calculating the nutritional value.
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
