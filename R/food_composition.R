@@ -66,17 +66,20 @@ getFoodNameByFoodNumber = function(food_number) {
   food_composition[food_composition$item_no==food_number,"food_and_description"]
 }
 
-calcNutrientMultipledays = function(food_list_multiple = sample_meal_multiple) {
+calcNutrientMultipledays = function(food_list_multiple = sample_meal_multiple, is_trans = FALSE) {
   data("sample_meal_multiple")
   if (is.data.frame(food_list_multiple)) {
     stop("If you want to calculate a meal for one day, use the calcNutrient().")
   }
   ret <- sapply(food_list_multiple, calcNutrient)
   mean_nutrient <- round(rowMeans(ret), 3)
-  return(mean_nutrient)
+  if(is_trans){
+    return(t(mean_nutrient))
+  }
+    return(mean_nutrient)
 }
 
-calcNutrient = function(food_list = sample_meal_day1) {
+calcNutrient = function(food_list = sample_meal_day1, is_trans = FALSE) {
   data("sample_meal")
   data("food_composition")
   food_number <- food_list$food_number
@@ -87,7 +90,11 @@ calcNutrient = function(food_list = sample_meal_day1) {
   nutrient_data <- food_composition[food_number, 7:ncol(food_composition) - 1]
   nutrient_result <- nutrient_data * 0.01 * food_weight
   nutrient_total <- colSums(nutrient_result)
-  return(nutrient_total)
+  if (is_trans) {
+    return(t(nutrient_total))
+  }else{
+    return(nutrient_total)
+  }
 }
 
 createMeal = function(){
@@ -109,6 +116,7 @@ createFoodBySearch = function(){
   group <- getFoodGroups()[menu(getFoodGroups(), graphics = TRUE)]
   keyword <- readline("please input search keyword...")
   subset <- findFood(keyword = keyword, food_group = group)
+  print(subset)
   subset <- subset[menu(subset[, "food_and_description"], graphics = TRUE), ]
   weight <- as.numeric(readline("please input weight..."))
   return(createFood(subset$item_no, weight))
@@ -117,6 +125,8 @@ createFoodBySearch = function(){
 createFoodBySelect = function(){
   group <- getFoodGroups()[menu(getFoodGroups(), graphics = TRUE)]
   subset <- food_composition[food_composition$food_group==group,]
+  print(subset)
+
   subset <- subset[menu(subset[, "food_and_description"], graphics = TRUE), ]
   weight <- as.numeric(readline("please input weight..."))
   return(createFood(subset$item_no, weight))
