@@ -116,8 +116,11 @@ createFoodBySearch = function(){
   group <- getFoodGroups()[menu(getFoodGroups(), graphics = TRUE)]
   keyword <- readline("please input search keyword...")
   subset <- findFood(keyword = keyword, food_group = group)
-  print(subset)
-  subset <- subset[menu(subset[, "food_and_description"], graphics = TRUE), ]
+  index <- menu(subset[, "food_and_description"],graphics = TRUE)
+  if(index==0){
+    index <- index + 1
+  }
+  subset <- subset[index, ]
   weight <- as.numeric(readline("please input weight..."))
   return(createFood(subset$item_no, weight))
 }
@@ -125,9 +128,8 @@ createFoodBySearch = function(){
 createFoodBySelect = function(){
   group <- getFoodGroups()[menu(getFoodGroups(), graphics = TRUE)]
   subset <- food_composition[food_composition$food_group==group,]
-  print(subset)
-
-  subset <- subset[menu(subset[, "food_and_description"], graphics = TRUE), ]
+  index <- menu(subset[, "food_and_description"], graphics = TRUE)
+  subset <- subset[index, ]
   weight <- as.numeric(readline("please input weight..."))
   return(createFood(subset$item_no, weight))
 }
