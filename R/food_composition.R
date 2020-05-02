@@ -82,21 +82,26 @@ calcNutrientMultipledays = function(food_list_multiple = sample_meal_multiple, i
 calcNutrient = function(food_list = sample_meal_day1, is_trans = FALSE) {
   data("sample_meal")
   data("food_composition")
-  food_number <- food_list$food_number
-  food_weight <- food_list$weight
+  getNutrientResult <- function(food_list){
+    nutrient_data <- food_composition[food_composition$item_no == food_list["food_number"], 7:ncol(food_composition) - 1]
+    nutrient_result <- nutrient_data * 0.01 * as.numeric(food_list["weight"])
+    return(nutrient_result)
+  }
   # this nutrient_data is nutrient value only.
   # in addition, 7 is index that nutrient start (energy).
   # last nutrient item (Yield) is not included.
-  nutrient_data <- food_composition[food_number, 7:ncol(food_composition) - 1]
-  nutrient_result <- nutrient_data * 0.01 * food_weight
-  nutrient_total <- colSums(nutrient_result)
+  nutrient_result <- apply(food_list, 1, getNutrientResult) 
+  nutrient_result_df = data.frame()
+  for (row in nutrient_result) {
+    nutrient_result_df <- rbind(nutrient_result_df, row)
+  }
+  nutrient_total <- colSums(nutrient_result_df)
   if (is_trans) {
     return(t(nutrient_total))
   }else{
     return(nutrient_total)
   }
 }
-
 createMeal = function(){
   df <- data.frame(matrix(rep(NA, 3), nrow=1))[numeric(0), ]
   colnames(df) <- c("food_number", "food_and_description", "weight")
