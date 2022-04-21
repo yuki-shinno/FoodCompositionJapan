@@ -25,10 +25,15 @@ getFoodGroups = function() {
   return(unique(food_composition$food_group))
 }
 
-menufindFood <- function() {
-  group <- getFoodGroups()[menu(getFoodGroups(), graphics = TRUE)]
-  keyword = readline("please input keyword...")
-  res1 <- findFood(keyword = keyword, food_group = group)
+menufindFood <- function(keyword = NULL, food_group = NULL) {
+  if(is.null(food_group)){
+    food_group <- getFoodGroups()[menu(getFoodGroups(), graphics = TRUE)]
+  }
+  if(is.null(keyword)){
+    res1 <- findFood(readline("please input keyword..."), food_group)
+  }else{
+    res1 <- findFood(keyword, food_group)
+  }
   return(res1[menu(res1[, "food_and_description"], graphics = TRUE), ])
 }
 
