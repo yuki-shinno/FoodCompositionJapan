@@ -8,16 +8,11 @@ extractSubsetFromFoodGroup = function(target_food_group) {
   return(subset_food_composition)
 }
 
-deleteBrackets = function(target) {
-  target <- gsub(pattern = "\\(", replacement = "", x = target)
-  target <- gsub(pattern = ")", replacement = "", x = target)
-  return(target)
-}
 
 getNutrientNames = function() {
   data("food_composition")
   col_names <- colnames(food_composition)
-  return(extractValueFromVector(target = col_names, keyword = ")"))
+  return(col_names)
 }
 
 getFoodGroups = function() {
@@ -34,7 +29,7 @@ menufindFood <- function(keyword = NULL, food_group = NULL) {
   }else{
     res1 <- findFood(keyword, food_group)
   }
-  return(res1[menu(res1[, "food_and_description"], graphics = TRUE), ])
+  return(res1[menu(res1[, "food_name"], graphics = TRUE), ])
 }
 
 findFood = function(keyword, food_group = NULL) {
@@ -42,7 +37,7 @@ findFood = function(keyword, food_group = NULL) {
   if (is.character(food_group)) {
     food_composition <- extractSubsetFromFoodGroup(food_group)
   }
-  subset_food <- subset(food_composition, grepl(keyword, food_composition$food_and_description, ignore.case = T))
+  subset_food <- subset(food_composition, grepl(keyword, food_composition$food_name, ignore.case = T))
   if (dim(subset_food)[1] == 0) {
     stop("not found input keyword.")
   }
@@ -53,12 +48,12 @@ subsetFoodRichIn = function(nutrient_name, food_group = NULL, n = 10) {
   if (is.character(food_group)) {
     food_composition <- extractSubsetFromFoodGroup(food_group)
   }
-
-  index <- (grep(x = deleteBrackets(colnames(food_composition)), pattern = deleteBrackets(nutrient_name)))
+  
+  index <- (grep(x = colnames(food_composition), pattern = nutrient_name))
   if (length(index) > 1) {
     stop("multiple food groups were matched. Enter unique food groups.")
   }
-
+  
   food_composition <- food_composition[order(food_composition[index], decreasing = T), ]
   if (dim(food_composition)[1] == 0) {
     stop("not found input food group.")
@@ -68,7 +63,7 @@ subsetFoodRichIn = function(nutrient_name, food_group = NULL, n = 10) {
 
 getFoodNameByFoodNumber = function(food_number) {
   data("food_composition")
-  food_composition[food_composition$item_no==food_number,"food_and_description"]
+  food_composition[food_composition$food_number==food_number,"food_name"]
 }
 
 calcNutrientMultipledays = function(food_list_multiple = sample_meal_multiple, is_trans = FALSE) {
@@ -81,20 +76,18 @@ calcNutrientMultipledays = function(food_list_multiple = sample_meal_multiple, i
   if(is_trans){
     return(t(mean_nutrient))
   }
-    return(mean_nutrient)
+  return(mean_nutrient)
 }
 
 calcNutrient = function(food_list = sample_meal_day1, is_trans = FALSE) {
   data("sample_meal")
   data("food_composition")
   getNutrientResult <- function(food_list){
-    nutrient_data <- food_composition[food_composition$item_no == food_list["food_number"], 7:ncol(food_composition) - 1]
+    nutrient_data <- food_composition[food_composition$food_number == food_list["food_number"], 5:ncol(food_composition) ]
     nutrient_result <- nutrient_data * 0.01 * as.numeric(food_list["weight"])
     return(nutrient_result)
   }
-  # this nutrient_data is nutrient value only.
-  # in addition, 7 is index that nutrient start (energy).
-  # last nutrient item (Yield) is not included.
+
   nutrient_result <- apply(food_list, 1, getNutrientResult) 
   nutrient_result_df = data.frame()
   for (row in nutrient_result) {
@@ -107,16 +100,17 @@ calcNutrient = function(food_list = sample_meal_day1, is_trans = FALSE) {
     return(nutrient_total)
   }
 }
+
 createMeal = function(){
   df <- data.frame(matrix(rep(NA, 3), nrow=1))[numeric(0), ]
-  colnames(df) <- c("food_number", "food_and_description", "weight")
+  colnames(df) <- c("food_number", "food_name", "weight")
   return(df)
 }
 
 createFood = function(food_number, weight){
   return(data.frame(
     food_number = food_number,
-    food_and_description = getFoodNameByFoodNumber(food_number),
+    food_name = getFoodNameByFoodNumber(food_number),
     weight = weight
   )
   )
@@ -138,10 +132,10 @@ createFoodBySearch = function(){
 createFoodBySelect = function(){
   group <- getFoodGroups()[menu(getFoodGroups(), graphics = TRUE)]
   subset <- food_composition[food_composition$food_group==group,]
-  index <- menu(subset[, "food_and_description"], graphics = TRUE)
+  index <- menu(subset[, "food_name"], graphics = TRUE)
   subset <- subset[index, ]
   weight <- as.numeric(readline("please input weight..."))
-  return(createFood(subset$item_no, weight))
+  return(createFood(subset$food_number, weight))
 }
 
 addFoodToMeal = function(meal, food){
