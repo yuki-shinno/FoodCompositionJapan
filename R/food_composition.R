@@ -8,7 +8,6 @@ extractSubsetFromFoodGroup = function(target_food_group) {
   return(subset_food_composition)
 }
 
-
 getNutrientNames = function() {
   data("food_composition")
   col_names <- colnames(food_composition)
@@ -48,12 +47,12 @@ subsetFoodRichIn = function(nutrient_name, food_group = NULL, n = 10) {
   if (is.character(food_group)) {
     food_composition <- extractSubsetFromFoodGroup(food_group)
   }
-  
+
   index <- (grep(x = colnames(food_composition), pattern = nutrient_name))
   if (length(index) > 1) {
     stop("multiple food groups were matched. Enter unique food groups.")
   }
-  
+
   food_composition <- food_composition[order(food_composition[index], decreasing = T), ]
   if (dim(food_composition)[1] == 0) {
     stop("not found input food group.")
@@ -87,8 +86,7 @@ calcNutrient = function(food_list = sample_meal_day1, is_trans = FALSE) {
     nutrient_result <- nutrient_data * 0.01 * as.numeric(food_list["weight"])
     return(nutrient_result)
   }
-
-  nutrient_result <- apply(food_list, 1, getNutrientResult) 
+  nutrient_result <- apply(food_list, 1, getNutrientResult)
   nutrient_result_df = data.frame()
   for (row in nutrient_result) {
     nutrient_result_df <- rbind(nutrient_result_df, row)
@@ -112,8 +110,7 @@ createFood = function(food_number, weight){
     food_number = food_number,
     food_name = getFoodNameByFoodNumber(food_number),
     weight = weight
-  )
-  )
+  ))
 }
 
 createFoodBySearch = function(){
