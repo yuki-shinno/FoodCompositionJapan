@@ -1,10 +1,10 @@
 Package: FoodCompositionJapan
 Type: Package
-Title: food databese in japan
-Version: 0.1.1
+Title: FoodCompositionJapan
+Version: 0.1.2
 Author: person("Yuki", "Shinno", email = "shinno.yuki@gmail.com", 
   role = c("aut", "cre"))
-Maintainer: The package maintainer <yourself@somewhere.net>
+Maintainer: The package maintainer shinno.yuki@gmail.com
 Description: This package contains a Japanese food composition table.
   In addition, it includes functions such as calculating the nutritional value.
 License: GPL-3
